@@ -43,3 +43,12 @@ foreach ($arch in @('amd64', 'arm64')) {
     wget.exe $BaseImgUrl/$Release/current/$Release-server-cloudimg-$arch-wsl.rootfs.tar.gz
     Move-Item -Force $Release-server-cloudimg-$arch-wsl.rootfs.tar.gz .\launcher\$ArchFolderName\install.tar.gz
 }
+
+Write-Host "# Rinsing Rice..." -ForegroundColor DarkYellow
+
+(Get-Content .\launcher\DistroLauncher.sln).replace('"DistroLauncher-Appx"', '"Ubuntu"') | Set-Content .\launcher\DistroLauncher.sln
+(Get-Content .\launcher\DistroLauncher.sln).replace('DistroLauncher-Appx.', 'Ubuntu.') | Set-Content .\launcher\DistroLauncher.sln
+
+
+
+# Remove-Item -Force -Recurse launcher
