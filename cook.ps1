@@ -29,10 +29,9 @@ Write-Host "# Full Name: $FullName" -ForegroundColor Green
 Write-Host "# Checking power..." -ForegroundColor DarkYellow
 
 foreach ($item in @('git.exe', 'wget.exe')) {
-    if ((Get-Command "$item" -ErrorAction SilentlyContinue) -eq $null) 
-    { 
-       Write-Host "Unable to find gpg.exe in your PATH"
-       exit 1
+    if ((Get-Command "$item" -ErrorAction SilentlyContinue) -eq $null) { 
+        Write-Host "Unable to find $item in your PATH"
+        exit 1
     }
 }
 
