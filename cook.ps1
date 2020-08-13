@@ -3,9 +3,11 @@ Param (
     [Parameter(Mandatory = $true)]
     [string]$Release,
     [Parameter(Mandatory = $false)]
-    [string]$BaseImgUrl="https://cloud-images.ubuntu.com",
+    [string]$BaseImgUrl = "https://cloud-images.ubuntu.com",
     [Parameter(Mandatory = $false)]
-    [string]$LauncherUrl="https://github.com/microsoft/WSL-DistroLauncher"
+    [string]$LauncherUrl = "https://github.com/microsoft/WSL-DistroLauncher",
+    [Parameter(Mandatory = $false)]
+    [string]$IngredientUrl = "git@github.com:patrick330602/ubuntu-cooker-ingredients"
 )
 
 $arch_linux2win = @{ amd64 = "x64"; arm64 = "ARM64" }
@@ -28,6 +30,9 @@ Write-Host "# Full Name: $FullName" -ForegroundColor Green
 # checking whether these executables exist
 Write-Host "# Checking power..." -ForegroundColor DarkYellow
 
+Import-Module C:\Users\Patrick\Git\PsUWI\PsUWI.psd1
+#Import-Module PsUWI
+
 foreach ($item in @('git.exe', 'wget.exe')) {
     if ((Get-Command "$item" -ErrorAction SilentlyContinue) -eq $null) { 
         Write-Host "Unable to find $item in your PATH"
@@ -38,6 +43,15 @@ foreach ($item in @('git.exe', 'wget.exe')) {
 # getting the WSL Distro Launcher source
 Write-Host "# Putting Rice..." -ForegroundColor DarkYellow
 git.exe clone $LauncherUrl launcher
+
+git.exe clone $IngredientUrl ingredients
+$build_instance = New-UbuntuWSLInstance -Release focal -Version 2 -AdditionalPkg "make,icoutils,inkscape" -NonInteractive
+Set-Location ./ingredients
+wsl.exe -d ubuntu-$build_instance -u $env:USERNAME DESTDIR=../launcher clean_remote
+wsl.exe -d ubuntu-$build_instance -u $env:USERNAME make
+wsl.exe -d ubuntu-$build_instance -u $env:USERNAME DESTDIR=../launcher make install
+Remove-UbuntuWSLInstance -Id $build_instance
+Set-Location ..
 
 
 Write-Host "# Putting Water..." -ForegroundColor DarkYellow
@@ -64,5 +78,5 @@ Write-Host "# Rinsing Rice..." -ForegroundColor DarkYellow
 (Get-Content .\launcher\DistroLauncher.sln).replace('DistroLauncher-Appx.', 'Ubuntu.') | Set-Content .\launcher\DistroLauncher.sln
 
 
-
+# Remove-Item -Force -Recurse ingredients
 # Remove-Item -Force -Recurse launcher
