@@ -8,7 +8,22 @@ Param (
     [string]$LauncherUrl="https://github.com/microsoft/WSL-DistroLauncher"
 )
 
-$arch_linux2win = @{ amd64 = "x64"; arm64 = "ARM64"}
+$arch_linux2win = @{ amd64 = "x64"; arm64 = "ARM64" }
+#importing definitions to be used for build
+Write-Host "# Checking manual..." -ForegroundColor DarkYellow
+
+$ARamdomTable = Import-Csv .\def.csv | Where-Object rel -eq "$Release"
+$ReleaseChannel = $ARamdomTable.rel
+$Release = $ARamdomTable.code
+$ExecName = $ARamdomTable.name
+$FullName = $ARamdomTable.full_rel
+$RelVersion = $ARamdomTable.ver
+Write-Host "#####################" -ForegroundColor Green
+Write-Host "# Channel: $ReleaseChannel" -ForegroundColor Green
+Write-Host "# Version: $RelVersion" -ForegroundColor Green
+Write-Host "# Codename: $Release" -ForegroundColor Green
+Write-Host "# Executable Name: $ExecName.exe" -ForegroundColor Green
+Write-Host "# Full Name: $FullName" -ForegroundColor Green
 
 # checking whether these executables exist
 Write-Host "# Checking power..." -ForegroundColor DarkYellow
