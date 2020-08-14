@@ -1,0 +1,6 @@
+# IDE stuff
+.vscode
+
+# temp folders
+launcher
+ingredients
