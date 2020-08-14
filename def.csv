@@ -1,6 +1,6 @@
-rel,code,name,ver,full_rel
-interim,groovy,ubuntu-insiders,2010,Ubuntu Insiders
-lts,focal,ubuntu,2004,Ubuntu
-focal,focal,ubuntu2004,2004,Ubuntu 20.04
-bionic,bionic,ubuntu1804,1804,Ubuntu 18.04
-xenial,xenial,ubuntu1604,1604,Ubuntu 16.04
+rel,code,name,ver,full_rel,reg
+insider,groovy,ubuntu-insiders,2010,Ubuntu Insiders,Ubuntu-Insider
+lts,focal,ubuntu,2004,Ubuntu,Ubuntu
+focal,focal,ubuntu2004,2004,Ubuntu 20.04,Ubuntu-20.04
+bionic,bionic,ubuntu1804,1804,Ubuntu 18.04,Ubuntu-18.04
+xenial,xenial,ubuntu1604,1604,Ubuntu 16.04,Ubuntu-16.04
