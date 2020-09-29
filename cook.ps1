@@ -7,7 +7,9 @@ Param (
     [Parameter(Mandatory = $false)]
     [string]$LauncherUrl = "https://github.com/microsoft/WSL-DistroLauncher",
     [Parameter(Mandatory = $false)]
-    [string]$IngredientUrl = "git@github.com:patrick330602/ubuntu-cooker-ingredients"
+    [string]$IngredientUrl = "git@github.com:patrick330602/ubuntu-cooker-ingredients",
+    [Parameter(Mandatory = $false)]
+    [switch]$DontRemoveFiles
 )
 
 function Find-AndInsertAfter {
@@ -165,8 +167,10 @@ try {
     }
 }
 finally {
-    Remove-UbuntuWSLInstance -Id $build_instance
-    Remove-Item -Force -Recurse ingredients
-    # Remove-Item -Force -Recurse launcher
-}
+    if (-not $DontRemoveFiles) {
+        Remove-UbuntuWSLInstance -Id $build_instance
+        Remove-Item -Force -Recurse ingredients
+        Remove-Item -Force -Recurse launcher
+    }
 
+}
