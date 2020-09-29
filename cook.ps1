@@ -35,7 +35,7 @@ Write-Host "# Checking power..." -ForegroundColor DarkYellow
 
 $ARamdomTable = Import-Csv .\def.csv | Where-Object rel -eq "$Release"
 
-If ($ARamdomTable.rel -eq $null) {throw ""}
+If ($null -eq $ARamdomTable.rel) {throw ""}
 
 $ReleaseChannel = $ARamdomTable.rel
 $Release = $ARamdomTable.code
