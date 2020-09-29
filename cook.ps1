@@ -67,19 +67,19 @@ Import-Module C:\Users\Patrick\Git\PsUWI\PsUWI.psd1
 $build_instance = New-UbuntuWSLInstance -Release focal -Version 2 -AdditionalPkg "git,wget,make,icoutils,inkscape" -NonInteractive
 wsl.exe -d ubuntu-$build_instance echo -e `"`[automount`]\noptions `= `"metadata`"`" `>`> /etc/wsl.conf
 wsl.exe -t ubuntu-$build_instance
-function Run-WithInstance { wsl.exe -d ubuntu-$build_instance -u $env:USERNAME $args }
+function Invoke-WithInstance { wsl.exe -d ubuntu-$build_instance -u $env:USERNAME $args }
 
 try {
     # getting the WSL Distro Launcher source
     Write-Host "# Putting Rice..." -ForegroundColor DarkYellow
-    Run-WithInstance git clone $LauncherUrl launcher
+    Invoke-WithInstance git clone $LauncherUrl launcher
 
     git.exe clone $IngredientUrl ingredients
-    # Run-WithInstance git clone $IngredientUrl ingredients
+    # Invoke-WithInstance git clone $IngredientUrl ingredients
     Set-Location ./ingredients
-    Run-WithInstance DESTDIR=../launcher clean_remote
-    Run-WithInstance make
-    Run-WithInstance DESTDIR=../launcher make install
+    Invoke-WithInstance DESTDIR=../launcher clean_remote
+    Invoke-WithInstance make
+    Invoke-WithInstance DESTDIR=../launcher make install
     Set-Location ..
 
     Write-Host "# Putting Water..." -ForegroundColor DarkYellow
@@ -96,7 +96,7 @@ try {
         if ( -not (Test-Path -Path ".\launcher\$ArchFolderName" -PathType Container ) ) {
             mkdir -Path ".\launcher\$ArchFolderName" | Out-Null
         }
-        Run-WithInstance wget $BaseImgUrl/$Release/current/$Release-server-cloudimg-$arch-wsl.rootfs.tar.gz
+        Invoke-WithInstance wget $BaseImgUrl/$Release/current/$Release-server-cloudimg-$arch-wsl.rootfs.tar.gz
         Move-Item -Force $Release-server-cloudimg-$arch-wsl.rootfs.tar.gz .\launcher\$ArchFolderName\install.tar.gz
     }
 
