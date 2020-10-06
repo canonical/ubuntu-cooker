@@ -9,7 +9,7 @@ Param (
     [Parameter(Mandatory = $false)]
     [string]$IngredientUrl = "git@github.com:patrick330602/ubuntu-cooker-ingredients",
     [Parameter(Mandatory = $false)]
-    [switch]$DontRemoveFiles
+    [switch]$PrepareOnly
 )
 
 function Find-AndInsertAfter {
@@ -152,6 +152,7 @@ try {
         Find-AndReplace ".\launcher\DistroLauncher-Appx\$ArchFolderName\Ubuntu.appxmanifest" 'ARCHITECTUREPLACEHOLDER' "$($ArchFolderName.ToLower())"
     }
 
+    if (-not $PrepareOnly) {
     Write-Host "# Cooking Rice..." -ForegroundColor DarkYellow
 
     if ( -not (Test-Path -Path ".\launcher\DistroLauncher-Appx\DistroLauncher-Appx_TemporaryKey.pfx" -PathType Leaf) ) {
@@ -165,9 +166,10 @@ try {
         }
         & 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe' .\launcher\DistroLauncher.sln /t:Build /m /nr:true /p:Configuration=Release /p:AppxBundle=Always /p:AppxBundlePlatforms="x64|ARM64" /p:UapAppxPackageBuildMode=StoreUpload
     }
+    }
 }
 finally {
-    if (-not $DontRemoveFiles) {
+    if (-not $PrepareOnly) {
         Remove-UbuntuWSLInstance -Id $build_instance
         Remove-Item -Force -Recurse ingredients
         Remove-Item -Force -Recurse launcher
