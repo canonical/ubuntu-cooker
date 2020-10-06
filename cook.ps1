@@ -109,6 +109,7 @@ try {
     Find-AndReplace .\launcher\DistroLauncher.sln 'DistroLauncher-Appx.' 'Ubuntu.'
 
     # DistroLauncher
+    Copy-Item -Recurse -Force .\ingredients\sourcecode\* .\launcher\DistroLauncher\
     Find-AndReplace .\launcher\DistroLauncher\DistributionInfo.h 'MyDistribution' "$RegName"
     Find-AndReplace .\launcher\DistroLauncher\DistributionInfo.h 'My Distribution' "$FullName"
 
