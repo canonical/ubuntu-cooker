@@ -112,6 +112,7 @@ try {
     Copy-Item -Recurse -Force .\ingredients\sourcecode\* .\launcher\DistroLauncher\
     Find-AndReplace .\launcher\DistroLauncher\DistributionInfo.h 'MyDistribution' "$RegName"
     Find-AndReplace .\launcher\DistroLauncher\DistributionInfo.h 'My Distribution' "$FullName"
+    Find-AndReplace .\launcher\DistroLauncher\DistroLauncher.vcxproj 'v142' 'v141'
 
     #DistroLauncherAppx
     Rename-Item -Path .\launcher\DistroLauncher-Appx\DistroLauncher-Appx.vcxproj -NewName Ubuntu.vcxproj
@@ -119,6 +120,7 @@ try {
 
     Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj.filters 'MyDistro.appxmanifest' '$(Platform)/Ubuntu.appxmanifest'
 
+    Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj 'v142' 'v141'
     Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj 'MyDistro.appxmanifest' '$(Platform)/Ubuntu.appxmanifest'
     Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj '10.0.16215.0' '10.0.16237.0'
     Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj 'MyDistro.appxmanifest' '$(Platform)/Ubuntu.appxmanifest'
