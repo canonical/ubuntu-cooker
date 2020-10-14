@@ -1,4 +1,10 @@
-function Make-Clean {
-    Remove-Item -Force -Recurse ingredients
-    Remove-Item -Force -Recurse launcher
+
+
+switch ("$args[0]")
+{
+    "clean" {
+        Remove-Item -Force -Recurse ingredients
+        Remove-Item -Force -Recurse launcher
+    } 
+    Default {"Unknown command. dead."}
 }
