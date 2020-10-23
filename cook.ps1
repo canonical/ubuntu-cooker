@@ -109,7 +109,6 @@ try {
     Write-Host "# Rinsing Rice..." -ForegroundColor DarkYellow
 
     # root folder
-    Copy-Item -Recurse -Force ".\ingredients\package.asso\$ReleaseChannel.xml" .\launcher\Package.StoreAssociation.xml
     Find-AndReplace .\launcher\DistroLauncher.sln '"DistroLauncher-Appx"' '"Ubuntu"'
     Find-AndReplace .\launcher\DistroLauncher.sln 'DistroLauncher-Appx.' 'Ubuntu.'
 
@@ -120,6 +119,8 @@ try {
     Find-AndReplace .\launcher\DistroLauncher\DistroLauncher.vcxproj 'v142' 'v141'
 
     #DistroLauncherAppx
+    Copy-Item -Recurse -Force ".\ingredients\package.asso\$ReleaseChannel.xml" .\launcher\DistroLauncher-Appx\Package.StoreAssociation.xml
+    
     Rename-Item -Path .\launcher\DistroLauncher-Appx\DistroLauncher-Appx.vcxproj -NewName Ubuntu.vcxproj
     Rename-Item -Path .\launcher\DistroLauncher-Appx\DistroLauncher-Appx.vcxproj.filters -NewName Ubuntu.vcxproj.filters
 
