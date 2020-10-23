@@ -109,6 +109,7 @@ try {
     Write-Host "# Rinsing Rice..." -ForegroundColor DarkYellow
 
     # root folder
+    Copy-Item -Recurse -Force ".\ingredients\package.asso\$ReleaseChannel.xml" .\launcher\Package.StoreAssociation.xml
     Find-AndReplace .\launcher\DistroLauncher.sln '"DistroLauncher-Appx"' '"Ubuntu"'
     Find-AndReplace .\launcher\DistroLauncher.sln 'DistroLauncher-Appx.' 'Ubuntu.'
 
