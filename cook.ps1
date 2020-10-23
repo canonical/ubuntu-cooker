@@ -46,6 +46,10 @@ $FullName = $ARamdomTable.full_rel
 $RelVersion = $ARamdomTable.ver
 $RegName = $FullName.replace(' LTS', '').replace(" ", "-")
 $PkgName = "CanonicalGroupLimited.$($FullName.replace(' LTS', '').replace(" ", ''))onWindows"
+if ($FullName.endswith("Insiders")) {
+    $RegName = "Ubuntu-Insiders"
+    $PkgName = "CanonicalGroupLimited.UbuntuonWindowsInsiders"
+}
 $PkgVersion = "$RelVersion.$(get-date -Format yyyy.Mdd).0"
 Write-Host "#####################" -ForegroundColor Green
 Write-Host "# $ReleaseChannel Channel" -ForegroundColor Green
