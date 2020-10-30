@@ -83,7 +83,6 @@ try {
     git.exe clone $IngredientUrl ingredients
     # Invoke-WithInstance git clone $IngredientUrl ingredients
     Set-Location ./ingredients
-    Invoke-WithInstance DESTDIR=../launcher clean_remote
     Invoke-WithInstance make
     Invoke-WithInstance DESTDIR=../launcher make install
     Set-Location ..
