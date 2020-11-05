@@ -9,6 +9,8 @@ Param (
     [Parameter(Mandatory = $false)]
     [string]$IngredientUrl = "git@github.com:patrick330602/ubuntu-cooker-ingredients",
     [Parameter(Mandatory = $false)]
+    [string]$PsUWIModuleLoc,
+    [Parameter(Mandatory = $false)]
     [switch]$PrepareOnly
 )
 
@@ -67,8 +69,18 @@ Write-Host "# Package Name: $PkgVersion" -ForegroundColor Green
 # checking whether these executables exist
 Write-Host "# Getting cooker ready..." -ForegroundColor DarkYellow
 
-Import-Module C:\Users\Patrick\Git\PsUWI\PsUWI.psd1
-#Import-Module PsUWI
+if ($null -eq $PsUWIModuleLoc) {
+    if (-not (Get-Module -Name "PsUWI")) {
+        # module is not loaded
+        Install-Module -Name PsUWI -Force -Verbose -Scope CurrentUser
+    }
+    Import-Module PsUWI
+}
+else {
+    #Import-Module C:\Users\Patrick\Git\PsUWI\PsUWI.psd1
+    Import-Module "$PsUWIModuleLoc\PsUWI.psd1"
+}
+
 
 $build_instance = New-UbuntuWSLInstance -Release focal -Version 2 -AdditionalPkg "git,wget,make,icoutils,inkscape" -NonInteractive
 wsl.exe -d ubuntu-$build_instance echo -e `"`[automount`]\noptions `= `"metadata`"`" `>`> /etc/wsl.conf
