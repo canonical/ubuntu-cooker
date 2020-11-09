@@ -8,10 +8,10 @@ switch ("$option")
         & 'C:\Program Files (x86)\Windows Kits\10\bin\x64\pvk2pfx' -pvk .\launcher\DistroLauncher-Appx\DistroLauncher-Appx_TemporaryKey.pvk -spc .\launcher\DistroLauncher-Appx\DistroLauncher-Appx_TemporaryKey.cer -pfx .\launcher\DistroLauncher-Appx\DistroLauncher-Appx_TemporaryKey.pfx
     }
     "all" {
-        & 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe' .\launcher\DistroLauncher.sln /t:Build /m /nr:true /p:Configuration=Release /p:AppxBundle=Always /p:AppxBundlePlatforms="x64|ARM64" /p:UapAppxPackageBuildMode=StoreUpload
+        & 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe' .\launcher\DistroLauncher.sln /t:Build /m /nr:false /p:Configuration=Release /p:AppxBundle=Always /p:AppxBundlePlatforms="x64|ARM64" /p:UapAppxPackageBuildMode=StoreUpload
     }
     "x64-only" {
-        & 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe' .\launcher\DistroLauncher.sln /t:Build /m /nr:true /p:Configuration=Release /p:AppxBundle=Always /p:Platform=x64 /p:UapAppxPackageBuildMode=StoreUpload
+        & 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe' .\launcher\DistroLauncher.sln /t:Build /m /nr:false /p:Configuration=Release /p:AppxBundle=Always /p:Platform=x64 /p:UapAppxPackageBuildMode=StoreUpload
     }
     "clean" {
         Remove-Item -Force -Recurse ingredients

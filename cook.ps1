@@ -144,6 +144,7 @@ try {
     Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj 'mydistro' "$ExecName"
     Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj '<ProjectName>DistroLauncher-Appx</ProjectName>' '<ProjectName>Ubuntu</ProjectName>'
     Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj '<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>' ''
+    Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj "<Command>copy `$(SolutionDir)\`$(platform)\`$(Configuration)\launcher.exe `$(SolutionDir)\`$(platform)\`$(Configuration)\`$(ProjectName)\`$(targetname).exe</Command>" "<Command>copy `$(OutDir)\..\launcher.exe `$(OutDir)\`$(targetname).exe</Command>"
     Find-AndInsertAfter .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj '<AppxBundlePlatforms>x64|arm64</AppxBundlePlatforms>' '    <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>'
 
     Find-AndReplace .\launcher\DistroLauncher-Appx\MyDistro.appxmanifest ' Name="WSL-DistroLauncher"' " Name=`"$PkgName`""
