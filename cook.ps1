@@ -145,6 +145,9 @@ try {
     Find-AndReplace .\launcher\DistroLauncher\DistroLauncher.vcxproj 'v142' 'v141'
 
     #DistroLauncherAppx
+    if ( Test-Path -Path ".\ingredients\temp.key" -PathType Container ) {
+        Copy-Item -Recurse -Force .\ingredients\temp.key\* .\launcher\DistroLauncher-Appx\
+    }
     Copy-Item -Recurse -Force ".\ingredients\package.asso\$ReleaseChannel.xml" .\launcher\DistroLauncher-Appx\Package.StoreAssociation.xml
     
     Rename-Item -Path .\launcher\DistroLauncher-Appx\DistroLauncher-Appx.vcxproj -NewName Ubuntu.vcxproj
