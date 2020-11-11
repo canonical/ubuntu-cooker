@@ -41,9 +41,9 @@ Write-Host "# Checking power..." -ForegroundColor DarkYellow
 
 $ARamdomTable = Import-Csv .\def.csv | Where-Object rel -eq "$Release"
 
-If ($null -eq $ARamdomTable.rel) {throw "-Release is required"}
+If ([string]::IsNullOrWhiteSpace($ARamdomTable.rel)) {throw "-Release is required."}
 
-If (($null -eq $InsiderImageLocation) -and ($ARamdomTable.rel -eq "insider")) {throw "insider version requires custom insider images."}
+If (([string]::IsNullOrWhiteSpace($InsiderImageLocation)) -and ($Release -eq "insider")) {throw "Insider version requires location to custom insider images."}
 
 $ReleaseChannel = $ARamdomTable.rel
 $Release = $ARamdomTable.code
@@ -73,7 +73,7 @@ Write-Host "# Package Name: $PkgVersion" -ForegroundColor Green
 # checking whether these executables exist
 Write-Host "# Getting cooker ready..." -ForegroundColor DarkYellow
 
-if ($null -eq $PsUWIModuleLoc) {
+if ([string]::IsNullOrWhiteSpace($PsUWIModuleLoc)) {
     if (-not (Get-Module -Name "PsUWI")) {
         # module is not loaded
         Install-Module -Name PsUWI -Force -Verbose -Scope CurrentUser
