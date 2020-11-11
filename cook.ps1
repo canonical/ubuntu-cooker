@@ -9,6 +9,8 @@ Param (
     [Parameter(Mandatory = $false)]
     [string]$IngredientUrl = "git@github.com:patrick330602/ubuntu-cooker-ingredients",
     [Parameter(Mandatory = $false)]
+    [string]$InsiderImageLocation,
+    [Parameter(Mandatory = $false)]
     [string]$PsUWIModuleLoc,
     [Parameter(Mandatory = $false)]
     [switch]$PrepareOnly
@@ -39,7 +41,9 @@ Write-Host "# Checking power..." -ForegroundColor DarkYellow
 
 $ARamdomTable = Import-Csv .\def.csv | Where-Object rel -eq "$Release"
 
-If ($null -eq $ARamdomTable.rel) {throw ""}
+If ($null -eq $ARamdomTable.rel) {throw "-Release is required"}
+
+If (($null -eq $InsiderImageLocation) -and ($ARamdomTable.rel -eq "insider")) {throw "insider version requires custom insider images."}
 
 $ReleaseChannel = $ARamdomTable.rel
 $Release = $ARamdomTable.code
@@ -104,17 +108,28 @@ try {
     #     wget.exe $BaseImgUrl/$Release/current/$item
     # }
     # gpg.exe --verify SHA256SUMS.gpg SHA256SUMS
-
-    foreach ($arch in @('amd64', 'arm64')) {
-        if ( ( $Release -eq "xenial" ) -and ( $arch -eq "arm64" )) {
-            break
+    If ($ReleaseChannel -eq "insider") {
+        foreach ($arch in @('amd64', 'arm64')) {
+            $ArchFolderName = $arch_linux2win["$arch"]
+            if ( -not (Test-Path -Path ".\launcher\$ArchFolderName" -PathType Container ) ) {
+                mkdir -Path ".\launcher\$ArchFolderName" | Out-Null
+            }
+            Invoke-WithInstance wget $InsiderImageLocation/$arch.tar.gz
+            Move-Item -Force $arch.tar.gz .\launcher\$ArchFolderName\install.tar.gz
         }
-        $ArchFolderName = $arch_linux2win["$arch"]
-        if ( -not (Test-Path -Path ".\launcher\$ArchFolderName" -PathType Container ) ) {
-            mkdir -Path ".\launcher\$ArchFolderName" | Out-Null
+    }
+    else {
+        foreach ($arch in @('amd64', 'arm64')) {
+            if ( ( $Release -eq "xenial" ) -and ( $arch -eq "arm64" )) {
+                break
+            }
+            $ArchFolderName = $arch_linux2win["$arch"]
+            if ( -not (Test-Path -Path ".\launcher\$ArchFolderName" -PathType Container ) ) {
+                mkdir -Path ".\launcher\$ArchFolderName" | Out-Null
+            }
+            Invoke-WithInstance wget $BaseImgUrl/$Release/current/$Release-server-cloudimg-$arch-wsl.rootfs.tar.gz
+            Move-Item -Force $Release-server-cloudimg-$arch-wsl.rootfs.tar.gz .\launcher\$ArchFolderName\install.tar.gz
         }
-        Invoke-WithInstance wget $BaseImgUrl/$Release/current/$Release-server-cloudimg-$arch-wsl.rootfs.tar.gz
-        Move-Item -Force $Release-server-cloudimg-$arch-wsl.rootfs.tar.gz .\launcher\$ArchFolderName\install.tar.gz
     }
 
     Write-Host "# Rinsing Rice..." -ForegroundColor DarkYellow
