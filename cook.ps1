@@ -204,7 +204,9 @@ try {
         } else {
             .\make.ps1 "all"
         }
-        mkdir .\OutPkg
+        if ( -not (Test-Path -Path ".\OutPkg" -PathType Container ) ) {
+            mkdir -Path ".\OutPkg" | Out-Null
+        }
         Copy-Item -Recurse -Force .\launcher\AppPackages\* .\OutPkg
     }
 }
