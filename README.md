@@ -13,7 +13,7 @@ This supports all the current releases on Microsoft Store:
 
 \*: Ubuntu 16.04 LTS is hidden and soon be pulled from the store as it is EOL. Still keep the build script for possible future extended support.
 
-## Reqauirement
+## Requirement
 
 Following is the requirement of building environment:
 
