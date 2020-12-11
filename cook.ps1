@@ -115,7 +115,7 @@ try {
                 mkdir -Path ".\launcher\$ArchFolderName" | Out-Null
             }
             Invoke-WithInstance wget $InsiderImageLocation/$arch.tar.gz
-            Move-Item -Force $arch.tar.gz .\launcher\$ArchFolderName\install.tar.gz
+            Move-Item -Force ".\$arch.tar.gz" ".\launcher\$ArchFolderName\install.tar.gz"
         }
     }
     else {
