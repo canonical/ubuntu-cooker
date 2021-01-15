@@ -9,6 +9,8 @@ Param (
     [Parameter(Mandatory = $false)]
     [string]$IngredientUrl = "git@github.com:canonical/ubuntu-cooker-ingredients",
     [Parameter(Mandatory = $false)]
+    [string]$IngredientBranch = "master",
+    [Parameter(Mandatory = $false)]
     [string]$InsiderImageLocation,
     [Parameter(Mandatory = $false)]
     [string]$PsUWIModuleLoc,
@@ -96,7 +98,7 @@ try {
     Write-Host "# Putting Rice..." -ForegroundColor DarkYellow
     Invoke-WithInstance git clone $LauncherUrl launcher
 
-    git.exe clone $IngredientUrl ingredients
+    git.exe clone -b $IngredientBranch $IngredientUrl ingredients
     # Invoke-WithInstance git clone $IngredientUrl ingredients
     Set-Location ./ingredients
     Invoke-WithInstance make
