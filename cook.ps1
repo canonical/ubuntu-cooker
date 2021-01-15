@@ -7,7 +7,7 @@ Param (
     [Parameter(Mandatory = $false)]
     [string]$LauncherUrl = "https://github.com/microsoft/WSL-DistroLauncher",
     [Parameter(Mandatory = $false)]
-    [string]$IngredientUrl = "git@github.com:patrick330602/ubuntu-cooker-ingredients",
+    [string]$IngredientUrl = "git@github.com:canonical/ubuntu-cooker-ingredients",
     [Parameter(Mandatory = $false)]
     [string]$InsiderImageLocation,
     [Parameter(Mandatory = $false)]
