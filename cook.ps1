@@ -169,7 +169,10 @@ try {
         if ( -not (Test-Path -Path ".\OutPkg" -PathType Container ) ) {
             mkdir -Path ".\OutPkg" | Out-Null
         }
-        Copy-Item -Recurse -Force .\launcher\AppPackages\* .\OutPkg
+        if ( -not (Test-Path -Path ".\OutPkg\$ReleaseChannel" -PathType Container ) ) {
+            mkdir -Path ".\OutPkg\$ReleaseChannel" | Out-Null
+        }
+        Copy-Item -Recurse -Force .\launcher\AppPackages\Ubuntu\* ".\OutPkg\$ReleaseChannel"
     }
 }
 finally {
