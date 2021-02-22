@@ -58,7 +58,7 @@ if ($FullName.endswith("Preview")) {
     $RegName = "Ubuntu-CommPrev"
     $PkgName = "CanonicalGroupLimited.UbuntuonWindowsCommunityPrev"
 }
-$PkgVersion = "$RelVersion.$(get-date -Format yyyy.MMdd).0"
+$PkgVersion = "$RelVersion.$(get-date -Format yyyy.Mdd).0"
 Write-Host "#####################" -ForegroundColor Green
 Write-Host "# $ReleaseChannel Channel" -ForegroundColor Green
 Write-Host "#####################" -ForegroundColor Green
