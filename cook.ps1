@@ -58,7 +58,7 @@ if ($FullName.endswith("Preview")) {
     $RegName = "Ubuntu-CommPrev"
     $PkgName = "CanonicalGroupLimited.UbuntuonWindowsCommunityPrev"
 }
-$PkgVersion = "$RelVersion.$(get-date -Format yyyy.Mdd).0"
+$PkgVersion = "$RelVersion.$(get-date -Format yyyy.MMdd).0"
 Write-Host "#####################" -ForegroundColor Green
 Write-Host "# $ReleaseChannel Channel" -ForegroundColor Green
 Write-Host "#####################" -ForegroundColor Green
@@ -70,7 +70,7 @@ Write-Host "# -------------------" -ForegroundColor Green
 Write-Host "# UWP SECTION" -ForegroundColor Green
 Write-Host "# Full Name: $FullName" -ForegroundColor Green
 Write-Host "# Package Name: $PkgName" -ForegroundColor Green
-Write-Host "# Package Name: $PkgVersion" -ForegroundColor Green
+Write-Host "# Package Version: $PkgVersion" -ForegroundColor Green
 
 # checking whether these executables exist
 Write-Host "# Getting cooker ready..." -ForegroundColor DarkYellow
