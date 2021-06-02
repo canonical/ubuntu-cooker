@@ -89,9 +89,9 @@ else {
 
 
 $build_instance = New-UbuntuWSLInstance -Release focal -Version 2 -AdditionalPkg "git,wget,make,icoutils,inkscape" -NonInteractive
-wsl.exe -d ubuntu-$build_instance echo -e `"`[automount`]\noptions `= `"metadata`"`" `>`> /etc/wsl.conf
+wsl.exe -d ubuntu-$build_instance -u root echo -e `"`[automount`]\noptions `= `"metadata`"`" `>`> /etc/wsl.conf
 wsl.exe -t ubuntu-$build_instance
-function Invoke-WithInstance { wsl.exe -d ubuntu-$build_instance -u $env:USERNAME $args }
+function Invoke-WithInstance { wsl.exe -d ubuntu-$build_instance $args }
 
 try {
     # getting the WSL Distro Launcher source
