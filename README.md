@@ -18,12 +18,12 @@ This supports all the current releases on Microsoft Store:
 Following is the requirement of building environment:
 
 - WSL and Virutal Machine Platform enabled (Windows 10 v1903 or higher)
-- Visual Studio Community 2017
+- Visual Studio Community 2019
     - Universal Windows Platform Support
-        - Windows 10 SDK (10.0.15063) and all higher SDKs
+        - Windows 10 SDK (10.0.16299) and all higher SDKs
         - C++ Universal Windows Platform tools
     - Desktop Development with C++
-        - VC++ 2017 v141 tools
+        - VC++ 2019 v142 tools
         - C++ Profiling tools
         - Visual C++ tools for CMake
 
