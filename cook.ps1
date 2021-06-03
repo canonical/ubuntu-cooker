@@ -11,6 +11,8 @@ Param (
     [Parameter(Mandatory = $false)]
     [string]$IngredientBranch = "master",
     [Parameter(Mandatory = $false)]
+    [string]$InsiderImageUrl,
+    [Parameter(Mandatory = $false)]
     [string]$InsiderImageLocation,
     [Parameter(Mandatory = $false)]
     [string]$PsUWIModuleLoc,
@@ -89,9 +91,9 @@ else {
 
 
 $build_instance = New-UbuntuWSLInstance -Release focal -Version 2 -AdditionalPkg "git,wget,make,icoutils,inkscape" -NonInteractive
-wsl.exe -d ubuntu-$build_instance echo -e `"`[automount`]\noptions `= `"metadata`"`" `>`> /etc/wsl.conf
+wsl.exe -d ubuntu-$build_instance -u root echo -e `"`[automount`]\noptions `= `"metadata`"`" `>`> /etc/wsl.conf
 wsl.exe -t ubuntu-$build_instance
-function Invoke-WithInstance { wsl.exe -d ubuntu-$build_instance -u $env:USERNAME $args }
+function Invoke-WithInstance { wsl.exe -d ubuntu-$build_instance $args }
 
 try {
     # getting the WSL Distro Launcher source
@@ -111,13 +113,23 @@ try {
     # }
     # gpg.exe --verify SHA256SUMS.gpg SHA256SUMS
     If ($ReleaseChannel -eq "insider") {
+        if (!$InsiderImageLocation -and !$InsiderImageUrl) {
+            throw "Neither InsiderImageLocation nor InsiderImageUrl are passed."
+        }
+        if ($InsiderImageLocation -and $InsiderImageUrl) {
+            Write-Host "# Both InsiderImageLocation and InsiderImageUrl are passed. Assuming InsiderImageUrl." -ForegroundColor DarkRed
+        }
         foreach ($arch in @('amd64', 'arm64')) {
             $ArchFolderName = $arch_linux2win["$arch"]
             if ( -not (Test-Path -Path ".\launcher\$ArchFolderName" -PathType Container ) ) {
                 mkdir -Path ".\launcher\$ArchFolderName" | Out-Null
             }
-            Invoke-WithInstance wget $InsiderImageLocation/$arch.tar.gz
-            Move-Item -Force ".\$arch.tar.gz" ".\launcher\$ArchFolderName\install.tar.gz"
+            if ($InsiderImageUrl) {
+                Invoke-WithInstance wget $InsiderImageUrl/$arch.tar.gz
+                Move-Item -Force ".\$arch.tar.gz" ".\launcher\$ArchFolderName\install.tar.gz"
+            } else {
+                Move-Item -Force "$InsiderImageLocation\$arch.tar.gz" ".\launcher\$ArchFolderName\install.tar.gz"
+            }
         }
     }
     else {
