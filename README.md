@@ -29,12 +29,18 @@ Following is the requirement of building environment:
 
 ## Build
 
-Run `.\cook.ps1 -Release <release> -IngredientUrl <url to ingredient repository>` to build.
+Run `.\cook.ps1 -Release <release> -PublishId <Publish ID>` to build.
 
-For `insider`, Additional location for the custom built images should be passed with `-InsiderImageLocation`.
+For `insider`, Additional location for the custom built images should be passed with `-InsiderImageLocation` or `-InsiderImageUrl`.
+
+For Custom ingredient used, please pass `-IngredientUrl`. Use `-IngredientBranch` to specify custom ingredient.
 
 ## Analysis
 
-Pass `-PrepareOnly` when analysing the generated launcher code.
+Pass `-PrepareOnly` when analysing the generated `launcher` code.
 
-Manual works should be built and handled with `.\make.ps1`. This script simulates `make` command.
+`launcher` should be built and handled with `.\make.ps1`.
+
+- `.\make.ps1 all` to build arm64/amd64 appxbundle.
+- `.\make.ps1 x64-only` to build amd64 appxbundle.
+- `.\make.ps1 clean` to remove the files downloaded/generated for build.
