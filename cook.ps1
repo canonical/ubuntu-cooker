@@ -19,7 +19,7 @@ Param (
     [Parameter(Mandatory = $false)]
     [switch]$PrepareOnly,
     [Parameter(Mandatory = $false)]
-    [switch]$WithUpload,
+    [switch]$WithUpload = $false,
     [Parameter(Mandatory = $false)]
     [string]$PublishID = "CN=Windows Console Dev Team"
 )
