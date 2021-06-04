@@ -17,7 +17,11 @@ Param (
     [Parameter(Mandatory = $false)]
     [string]$PsUWIModuleLoc,
     [Parameter(Mandatory = $false)]
-    [switch]$PrepareOnly
+    [switch]$PrepareOnly,
+    [Parameter(Mandatory = $false)]
+    [switch]$WithUpload,
+    [Parameter(Mandatory = $false)]
+    [string]$PublishID = "CN=Windows Console Dev Team"
 )
 
 function Find-AndInsertAfter {
@@ -47,7 +51,7 @@ $ARamdomTable = Import-Csv .\def.csv | Where-Object rel -eq "$Release"
 
 If ([string]::IsNullOrWhiteSpace($ARamdomTable.rel)) {throw "-Release is required."}
 
-If (([string]::IsNullOrWhiteSpace($InsiderImageLocation)) -and ($Release -eq "insider")) {throw "Insider version requires location to custom insider images."}
+If ((!$InsiderImageLocation -and !$InsiderImageUrl) -and ($Release -eq "insider")) {throw "Insider version requires location/url to custom insider images."}
 
 $ReleaseChannel = $ARamdomTable.rel
 $Release = $ARamdomTable.code
@@ -113,9 +117,6 @@ try {
     # }
     # gpg.exe --verify SHA256SUMS.gpg SHA256SUMS
     If ($ReleaseChannel -eq "insider") {
-        if (!$InsiderImageLocation -and !$InsiderImageUrl) {
-            throw "Neither InsiderImageLocation nor InsiderImageUrl are passed."
-        }
         if ($InsiderImageLocation -and $InsiderImageUrl) {
             Write-Host "# Both InsiderImageLocation and InsiderImageUrl are passed. Assuming InsiderImageUrl." -ForegroundColor DarkRed
         }
@@ -169,13 +170,22 @@ try {
         Write-Host "# Cooking Rice..." -ForegroundColor DarkYellow
 
         if ( -not (Test-Path -Path ".\launcher\DistroLauncher-Appx\DistroLauncher-Appx_TemporaryKey.pfx" -PathType Leaf) ) {
-            .\make.ps1 create-sign
+            $TmpTP = .\make.ps1 create-sign "$PublishID"
+            Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj '<PackageCertificateThumbprint>9AA4CA850308B67D8F3536434BF4224C5CAC519F</PackageCertificateThumbprint>' "<PackageCertificateThumbprint>$TmpTP</PackageCertificateThumbprint>"
+            Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj '<PackageCertificateKeyFile>DistroLauncher-Appx_TemporaryKey.pfx</PackageCertificateKeyFile>' ''               
+            Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj '<None Include="DistroLauncher-Appx_StoreKey.pfx" />' ''               
+            Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj '<None Include="DistroLauncher-Appx_TemporaryKey.pfx" />' ''
+            Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj.filters '<None Include="DistroLauncher-Appx_TemporaryKey.pfx" />' ''
+            Find-AndReplace .\launcher\DistroLauncher-Appx\Ubuntu.vcxproj.filters '<None Include="DistroLauncher-Appx_StoreKey.pfx" />' ''    
+        
         }
 
     
         if ( $Release -eq "xenial" ) {
             .\make.ps1 x64-only
-        } else {
+        } elseif ($WithUpload) {
+            .\make.ps1 "all"
+        } esle {
             .\make.ps1 "all"
         }
         if ( -not (Test-Path -Path ".\OutPkg" -PathType Container ) ) {
