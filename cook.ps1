@@ -7,7 +7,7 @@ Param (
     [Parameter(Mandatory = $false)]
     [string]$LauncherUrl = "https://github.com/microsoft/WSL-DistroLauncher",
     [Parameter(Mandatory = $false)]
-    [string]$IngredientUrl = "git@github.com:canonical/ubuntu-cooker-ingredients",
+    [string]$IngredientUrl = "https://github.com/canonical/ubuntu-cooker-ingredients",
     [Parameter(Mandatory = $false)]
     [string]$IngredientBranch = "master",
     [Parameter(Mandatory = $false)]
@@ -184,8 +184,8 @@ try {
         if ( $Release -eq "xenial" ) {
             .\make.ps1 x64-only
         } elseif ($WithUpload) {
-            .\make.ps1 "all"
-        } esle {
+            .\make.ps1 "all-upload"
+        } else {
             .\make.ps1 "all"
         }
         if ( -not (Test-Path -Path ".\OutPkg" -PathType Container ) ) {
