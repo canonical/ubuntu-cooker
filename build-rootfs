@@ -56,7 +56,7 @@ def request_build(lpconn, release_name, arch, packages_ppas, livecd_rootfs_ppa):
         logging.debug("Found existing livefs for %s", release_name)
     except NotFound:
         logging.debug("Create a new livefs for %s", release_name)
-        metadata = {"project": "ubuntu-cpc", "image-target": ["wsl"]}
+        metadata = {"project": "ubuntu-cpc", "image_targets": ["wsl"]}
         livefs = lpconn.livefses.new(distro_series=release, metadata=metadata, name="wsl", owner=owner)
 
     logging.debug("Found livefs %s" % livefs)
