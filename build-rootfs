@@ -1,0 +1,105 @@
+#!/usr/bin/python3
+
+"""
+#
+# This script triggers a build of WSL root fs in launchpad
+#
+"""
+
+# Copyright: 2021, Canonical Ltd.
+
+# License: GPL-3
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License.
+#  .
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY;without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#  .
+#  You should have received a copy of the GNU General Public License
+#  along with this program. If not, see <https://www.gnu.org/licenses/>.
+#  .
+#  On Debian systems, the complete text of the GNU General
+#  Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".
+
+import argparse
+import logging
+import sys
+import distro_info
+from lazr.restfulclient.errors import NotFound
+from launchpadlib.launchpad import Launchpad
+
+
+def set_logging(debugmode=False):
+    """Initialize logging"""
+    logging.basicConfig(
+        level=logging.DEBUG if debugmode else logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s")
+    logging.debug("Debug mode enabled")
+
+
+def lpinit():
+    """Initialize the connection to LP"""
+    return Launchpad.login_with('wslbuild', 'production', version='devel')
+
+
+def request_build(lpconn, release_name, arch, packages_ppas, livecd_rootfs_ppa):
+    """Request a launchpad rootfs build and create any livefs if not already present"""
+    release = lpconn.load("/ubuntu/%s" % release_name)
+    owner = lpconn.people["ubuntu-wsl-dev"]
+
+    # Get or create livefs
+    try:
+        livefs = lpconn.livefses.getByName(distro_series=release, name="wsl", owner=owner)
+        logging.debug("Found existing livefs for %s", release_name)
+    except NotFound:
+        logging.debug("Create a new livefs for %s", release_name)
+        metadata = {"project": "ubuntu-cpc", "image_targets": ["wsl"]}
+        livefs = lpconn.livefses.new(distro_series=release, metadata=metadata, name="wsl", owner=owner)
+
+    logging.debug("Found livefs %s" % livefs)
+    logging.debug("Requesting rootfs build, using:\nlivecd-rootfs:\t%s\nppas:\t%s\nrelease:\t%s\narchitecture:\t%s",
+                  livecd_rootfs_ppa, packages_ppas, release_name, arch)
+    livecd_rootfs_ppa_team, livecd_rootfs_ppa_name = livecd_rootfs_ppa.split("/")
+
+    archive = lpconn.load("~%s/+archive/%s" % (livecd_rootfs_ppa_team, livecd_rootfs_ppa_name))
+    distro_arch_series = lpconn.load("/ubuntu/%s/%s" % (release_name, arch))
+
+    return livefs.requestBuild(archive=archive, distro_arch_series=distro_arch_series,
+                               pocket="Updates", metadata_override={"extra_ppas": packages_ppas})
+
+
+def main():
+    """Main routine"""
+    args = _parse_arguments()
+    set_logging(args.debug)
+    logging.debug("arguments: %s", args)
+
+    lpconn = lpinit()
+    build = request_build(lpconn, args.release, args.arch, args.ppas, args.livecd_rootfs)
+    print(build.web_link)
+
+    return 0
+
+
+def _parse_arguments():
+    """Parse command-line args, returning an argparse dict."""
+
+    parser = argparse.ArgumentParser(description="Build wsl rootfs on launchpad.")
+    parser.add_argument("ppas", nargs="*", help="extra ppas to pick packages from")
+    parser.add_argument("-d", "--debug", action="store_true", default=False,
+                        help="enable debug mode")
+    parser.add_argument("-l", "--livecd-rootfs-ppa", dest="livecd_rootfs", default="ubuntu-wsl-dev/livecd-rootfs",
+                        help="ppa to use livecd-rootfs from. Default to ubuntu-wsl-dev/livecd-rootfs")
+    parser.add_argument("-r", "--release", dest="release", default=distro_info.UbuntuDistroInfo().devel(),
+                        help="release to build on. Default to latest devel release")
+    parser.add_argument("-a", "--arch", dest="arch", default="amd64",
+                        help="architecture to build on. Default to amd64")
+
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    sys.exit(main())
