@@ -21,7 +21,9 @@ Param (
     [Parameter(Mandatory = $false)]
     [switch]$WithUpload = $false,
     [Parameter(Mandatory = $false)]
-    [string]$PublishID = "CN=Windows Console Dev Team"
+    [string]$PublishID = "CN=Windows Console Dev Team",
+    [Parameter(Mandatory = $false)]
+    [string]$CustomImgDate = ""
 )
 
 function Find-AndInsertAfter {
@@ -142,7 +144,11 @@ try {
             if ( -not (Test-Path -Path ".\launcher\$ArchFolderName" -PathType Container ) ) {
                 mkdir -Path ".\launcher\$ArchFolderName" | Out-Null
             }
-            Invoke-WithInstance wget $BaseImgUrl/$Release/current/$Release-server-cloudimg-$arch-wsl.rootfs.tar.gz
+            $ImgRemLocation = "current"
+            if ( -not ($CustomImgDate -eq "")) {
+                $ImgRemLocation = $CustomImgDate
+            }
+            Invoke-WithInstance wget $BaseImgUrl/$Release/$ImgRemLocation/$Release-server-cloudimg-$arch-wsl.rootfs.tar.gz
             Move-Item -Force $Release-server-cloudimg-$arch-wsl.rootfs.tar.gz .\launcher\$ArchFolderName\install.tar.gz
         }
     }
